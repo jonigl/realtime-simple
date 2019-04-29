@@ -1,0 +1,17 @@
+{
+  "name": "realtime-simple",
+  "version": "1.0.0",
+  "description": "A simple realtmie user counter using socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Gastón Löwenstern",
+  "license": "BSD",
+  "dependencies": {
+    "express": "^4.16.4",
+    "redis": "^2.8.0",
+    "socket.io": "^2.2.0",
+    "socket.io-redis": "^5.2.0"
+  }
+}
