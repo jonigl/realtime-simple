@@ -1,0 +1,42 @@
+version: '3'
+services:
+  web1:
+    build: ./server
+    environment:
+      - SERVER_NAME=web1
+      - PORT=8080
+      - REDIS_ENDPOINT=redis
+      - REDIS_PORT=6379
+    links:
+      - redis
+  web2:
+    build: ./server
+    environment:
+      - SERVER_NAME=web2
+      - PORT=8080
+      - REDIS_ENDPOINT=redis
+      - REDIS_PORT=6379
+    links:
+      - redis
+  web3:
+    build: ./server
+    environment:
+      - SERVER_NAME=web3
+      - PORT=8080
+      - REDIS_ENDPOINT=redis
+      - REDIS_PORT=6379
+    links:
+      - redis
+  redis:
+    image: "redis:alpine"
+    ports:
+      - '6379:6379'
+  loadbalancer:
+      build: ./load-balancer
+      tty: true
+      links:
+          - web1
+          - web2
+          - web3
+      ports:
+          - '3000:3000'

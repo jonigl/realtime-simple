@@ -1,7 +1,8 @@
 $(function() {
 
+  var $serverName = $('#serverName'); // server area
   var $status = $('#status'); // status area
-  var $counter = $('#counter'); // status area
+  var $counter = $('#counter'); // counter area
   var socket = io({
     transports: ['websocket']
   });
@@ -16,6 +17,9 @@ $(function() {
       message += "there's 1 participant";
     } else {
       message += "there are " + data.numUsers + " participants";
+    }
+    if (data.serverName) {
+      $serverName.html(data.serverName);
     }
     $counter.html(message)
   }

@@ -12,7 +12,7 @@ var Presence = require('./lib/presence');
 io.set('heartbeat timeout', 8000);
 io.set('heartbeat interval', 4000);
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 
 server.listen(port, function() {
   console.log('Server listening at port %d', port);
@@ -44,7 +44,8 @@ io.on('connection', function(socket) {
 
     Presence.list(function(users) {
       socket.emit('user added', {
-        numUsers: users.length
+        numUsers: users.length,
+        serverName: process.env.SERVER_NAME
       });
       // echo globally (all clients) that a person has connected
       socket.broadcast.emit('user joined', {
