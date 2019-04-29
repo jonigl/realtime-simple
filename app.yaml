@@ -1,0 +1,29 @@
+# [START appengine_websockets_yaml]
+runtime: nodejs
+env: flex
+
+# update with Redis instance details
+env_variables:
+  REDIS_ENDPOINT: '10.0.0.3'
+  REDIS_PORT: '6379'
+  PORT: '8080'
+
+# Use only a single instance, so that this local-memory-only chat app will work
+# consistently with multiple users. To work across multiple instances, an
+# extra-instance messaging system or data store would be needed.
+automatic_scaling:
+  min_num_instances: 3
+  max_num_instances: 5
+  cool_down_period_sec: 180
+  cpu_utilization:
+    target_utilization: 0.6
+
+resources:
+  cpu: 2
+  memory_gb: 4
+  disk_size_gb: 10
+
+network:
+  session_affinity: true
+# [END appengine_websockets_yaml]
+
