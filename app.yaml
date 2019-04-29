@@ -6,7 +6,6 @@ env: flex
 env_variables:
   REDIS_ENDPOINT: '10.0.0.3'
   REDIS_PORT: '6379'
-  PORT: '8080'
 
 # Use only a single instance, so that this local-memory-only chat app will work
 # consistently with multiple users. To work across multiple instances, an
