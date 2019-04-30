@@ -26,7 +26,7 @@ module.exports = (io) => {
         socket.emit('user added', {
           numUsers: users.length,
           processPid: process.pid,
-          serverName: process.env.SERVER_NAME
+          serverName: process.env.GAE_INSTANCE
         });
         // echo globally (all clients) that a person has connected
         socket.broadcast.emit('user joined', {

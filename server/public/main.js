@@ -23,7 +23,7 @@ $(function() {
       $serverName.html("Server name: " + data.serverName);
     }
     if (data.processPid) {
-      $processPid.html("Process PID: " + data.processPid);
+      $processPid.html("GAE instance: " + data.processPid);
     }
     $counter.html(message)
   }
