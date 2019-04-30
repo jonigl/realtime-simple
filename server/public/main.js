@@ -1,6 +1,7 @@
 $(function() {
 
   var $serverName = $('#serverName'); // server area
+  var $processPid = $('#processPid'); // process pid area
   var $status = $('#status'); // status area
   var $counter = $('#counter'); // counter area
   var socket = io({
@@ -19,7 +20,10 @@ $(function() {
       message += "there are " + data.numUsers + " participants";
     }
     if (data.serverName) {
-      $serverName.html(data.serverName);
+      $serverName.html("Server name: " + data.serverName);
+    }
+    if (data.processPid) {
+      $processPid.html("Process PID: " + data.processPid);
     }
     $counter.html(message)
   }
@@ -27,32 +31,32 @@ $(function() {
   // Socket events
   // Whenever the server emits  'user added'
   socket.on('user added', function (data) {    
-    $status.html('user added');
+    $status.html('Status: user added');
     addParticipantsMessage(data);
   });
 
   // Whenever the server emits  'user added'
   socket.on('user joined', function (data) {    
-    $status.html('user joined');
+    $status.html('Status: a user joined');
     addParticipantsMessage(data);
   });
 
   // Whenever the server emits 'user left'
   socket.on('user left', function (data) {
-    $status.html('user left');
+    $status.html('Status: a user left');
     addParticipantsMessage(data);    
   });
 
   socket.on('disconnect', function () {
-    $status.html('you have been disconnected');
+    $status.html('Status: you have been disconnected');
   });
 
   socket.on('reconnect', function () {
-    $status.html('you have been reconnected');
+    $status.html('Status: you have been reconnected');
   });
 
   socket.on('reconnect_error', function () {
-    $status.html('attempt to reconnect has failed');
+    $status.html('Status: attempt to reconnect has failed');
   });
 
 });

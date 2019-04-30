@@ -8,13 +8,14 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/index.js",
+            "program": "${workspaceFolder}/server/cluster.js",
+            "autoAttachChildProcesses": true,
             "env":
             {
                 "PORT": "8080",
                 "REDIS_PORT": "6379",
                 "REDIS_ENDPOINT": "127.0.0.1"
-            }
+            },
         }
     ]
 }
