@@ -1,3 +1,5 @@
+//newrelic
+const nr = require('newrelic');
 // Google Cloud - Stackdriver Trace library for Node.js  
 require('@google-cloud/trace-agent').start();
 // Setup basic express server
