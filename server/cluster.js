@@ -1,3 +1,5 @@
+// Google Cloud - Stackdriver Trace library for Node.js  
+require('@google-cloud/trace-agent').start();
 // Setup basic express server
 var express = require('express');
 var app = express();
@@ -31,8 +33,8 @@ if (cluster.isMaster) {
     // Routing
     app.use(express.static(path.join(__dirname, 'public')));
     io.adapter(redis({ host: process.env.REDIS_ENDPOINT, port: process.env.REDIS_PORT }));
-    io.set('heartbeat timeout', 8000);
-    io.set('heartbeat interval', 4000);
+    // io.set('heartbeat timeout', 8000);
+    // io.set('heartbeat interval', 4000);
     require('./socket_process.js')(io);
     console.log(`Worker ${process.pid} started`);
 }

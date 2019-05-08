@@ -9,7 +9,7 @@ $(function() {
   });
 
   socket.on('connect', function(){
-    socket.emit('add user', {});
+    socket.emit('getAnalytics', {});
   });
 
   function addParticipantsMessage (data) {
@@ -23,29 +23,29 @@ $(function() {
       $serverName.html("Server name: " + data.serverName);
     }
     if (data.processPid) {
-      $processPid.html("GAE instance: " + data.processPid);
+      $processPid.html("Process id: " + data.processPid);
     }
     $counter.html(message)
   }
 
   // Socket events
   // Whenever the server emits  'user added'
-  socket.on('user added', function (data) {    
+  socket.on('showAnalytics', function (data) {    
     $status.html('Status: user added');
     addParticipantsMessage(data);
   });
 
   // Whenever the server emits  'user added'
-  socket.on('user joined', function (data) {    
-    $status.html('Status: a user joined');
-    addParticipantsMessage(data);
-  });
+  // socket.on('user joined', function (data) {    
+  //   $status.html('Status: a user joined');
+  //   addParticipantsMessage(data);
+  // });
 
   // Whenever the server emits 'user left'
-  socket.on('user left', function (data) {
-    $status.html('Status: a user left');
-    addParticipantsMessage(data);    
-  });
+  // socket.on('user left', function (data) {
+  //   $status.html('Status: a user left');
+  //   addParticipantsMessage(data);    
+  // });
 
   socket.on('disconnect', function () {
     $status.html('Status: you have been disconnected');
