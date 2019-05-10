@@ -22,15 +22,15 @@ module.exports = (io) => {
       // {} because no metadata is needed
       Presence.upsert(socket.id, {}); 
 
-      Presence.list(function(users) {
-        io.to('analytics').emit('showAnalytics', {
-          numUsers: users.length          
-        });
-        // echo globally (all clients) that a person has connected
-        // socket.broadcast.emit('user joined', {
-        //   numUsers: users.length
-        // });
-      });
+      // Presence.list(function(users) {
+      //   io.to('analytics').emit('showAnalytics', {
+      //     numUsers: users.length          
+      //   });
+      //   // echo globally (all clients) that a person has connected
+      //   // socket.broadcast.emit('user joined', {
+      //   //   numUsers: users.length
+      //   // });
+      // });
     });
 
     socket.on('getAnalytics', function() {
@@ -54,12 +54,12 @@ module.exports = (io) => {
       if (addedUser) {
         socket.leave('analytics');
         Presence.remove(socket.id);
-        Presence.list(function(users) {
-          // echo globally (all clients) that a person has connected
-          io.to('analytics').emit('showAnalytics', {    
-            numUsers: users.length
-          });
-        });
+        // Presence.list(function(users) {
+        //   // echo globally (all clients) that a person has connected
+        //   io.to('analytics').emit('showAnalytics', {    
+        //     numUsers: users.length
+        //   });
+        // });
       }
     });
 
