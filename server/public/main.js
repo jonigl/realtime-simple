@@ -17,12 +17,12 @@ $(function() {
   drawChart();
 
   socket.on('connect', function(){
-    var intervalMs =  parseInt($("#refreshIntervalInput").val()) * 1000;
+    var intervalMs =  parseFloat($("#refreshIntervalInput").val()) * 1000;
     getAnalytics(intervalMs);
   });
 
   $("#refreshIntervalInput").keyup(function() {
-    var intervalMs =  parseInt($("#refreshIntervalInput").val()) * 1000;
+    var intervalMs =  parseFloat($("#refreshIntervalInput").val()) * 1000;
     if (intervalMs > 300) {
       getAnalytics(intervalMs);
     }
@@ -47,6 +47,12 @@ $(function() {
     redisCounter.push(data.redisCounter);
     socketCount.push(data.socketCount);
     counter.push(data.counter);
+    // max history of 100 items
+    if (redisCounter.length > 100) {
+      redisCounter.shift();
+      socketCount.shift();
+      counter.shift();
+    }
     updateChart(redisCounter, socketCount, counter);
   }
 
