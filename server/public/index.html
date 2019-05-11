@@ -9,11 +9,19 @@
   <div id="serverName"></div>
   <div id="processPid"></div>
   <div id="status"></div>
+  <div id="redisCounter"></div>
+  <div id="socketCount"></div>
   <div id="counter"></div>
-  <div id="clientsCount"></div>
+  <label>RefreshInterval (seconds)</label>  
+  <input id="refreshIntervalInput" type="text" value="5">
+  <div id="graphContainer"></div>
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/series-label.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="/main.js"></script>
 </body>
 </html>

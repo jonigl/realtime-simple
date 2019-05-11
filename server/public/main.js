@@ -1,42 +1,60 @@
 $(function() {
-
+  var redisCounter = [];
+  var socketCount = [];
+  var counter = [];
+  var chart = null;
+  var interval = null;
   var $serverName = $('#serverName'); // server area
   var $processPid = $('#processPid'); // process pid area
-  var $clientsCount = $('#clientsCount'); // process pid area
   var $status = $('#status'); // status area
-  var $counter = $('#counter'); // counter area
+  var $redisCounter = $('#redisCounter'); // redis counter area
+  var $clientsCount = $('#socketCount'); // clients count by socket area
+  var $counter = $('#counter'); // simple var counter area
+  
   var socket = io({
     transports: ['websocket']
   });
+  drawChart();
 
   socket.on('connect', function(){
-    socket.emit('getAnalytics', {});
+    var intervalMs =  parseInt($("#refreshIntervalInput").val()) * 1000;
+    getAnalytics(intervalMs);
   });
 
-  function addParticipantsMessage (data) {
-    var message = '';
-    if (data.numUsers === 1) {
-      message += "there's 1 participant";
-    } else {
-      message += "there are " + data.numUsers + " participants";
+  $("#refreshIntervalInput").keyup(function() {
+    var intervalMs =  parseInt($("#refreshIntervalInput").val()) * 1000;
+    if (intervalMs > 300) {
+      getAnalytics(intervalMs);
     }
-    if (data.serverName) {
-      $serverName.html("Server name: " + data.serverName);
+  });
+
+  function getAnalytics(intervalMs){
+    if (interval) {
+      clearInterval(interval);
     }
-    if (data.processPid) {
-      $processPid.html("Process id: " + data.processPid);
-    }
-    if (data.clientsCount) {
-      $clientsCount.html("Socket clients count: " + data.clientsCount);
-    }
-    $counter.html(message)
+    socket.emit('getAnalytics', {});
+    interval = setInterval(function() {
+      socket.emit('getAnalytics', {});
+    }, intervalMs);
+  }
+
+  function refreshData (data) {
+    $serverName.html("Server name: " + data.serverName);
+    $processPid.html("Process id: " + data.processPid);
+    $redisCounter.html('Redis counter: ' + data.redisCounter)
+    $clientsCount.html("Socket counter: " + data.socketCount);
+    $counter.html('Simple var counter: ' + data.counter)
+    redisCounter.push(data.redisCounter);
+    socketCount.push(data.socketCount);
+    counter.push(data.counter);
+    updateChart(redisCounter, socketCount, counter);
   }
 
   // Socket events
   // Whenever the server emits  'user added'
   socket.on('showAnalytics', function (data) {    
-    $status.html('Status: user added');
-    addParticipantsMessage(data);
+    $status.html('Status: showAnalytics');
+    refreshData(data);
   });
 
   // Whenever the server emits  'user added'
@@ -62,5 +80,67 @@ $(function() {
   socket.on('reconnect_error', function () {
     $status.html('Status: attempt to reconnect has failed');
   });
+
+  function updateChart(redisCounter, socketCounter, counter){
+    chart.series[0].setData(redisCounter);
+    chart.series[1].setData(socketCounter);
+    chart.series[2].setData(counter);
+  };
+
+  function drawChart() {
+    chart = Highcharts.chart('graphContainer', {
+      title: {
+          text: 'Real-time websocket connections'
+      },
+      subtitle: {
+          text: 'Differenth methods to count connections'
+      },
+      yAxis: {
+          title: {
+              text: 'Number of Conections'
+          }
+      },
+      legend: {
+          layout: 'vertical',
+          align: 'right',
+          verticalAlign: 'middle'
+      },
+      series: [
+        {
+          name: 'Redis counter',
+          data: []
+        },
+        {
+          name: 'Socket.io counter',
+          data: []
+        },
+        {
+          name: 'Simple var counter',
+          data: []
+        }
+      ],
+      plotOptions: {
+        series: {
+          label: {
+            enabled: false
+          }
+        }
+      },
+      responsive: {
+          rules: [{
+              condition: {
+                  maxWidth: 500
+              },
+              chartOptions: {
+                  legend: {
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    layout: 'vertical'
+                  }
+              }
+          }]
+      }
+    });
+  }
 
 });
