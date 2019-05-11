@@ -18,7 +18,7 @@ if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }
 
@@ -28,7 +28,6 @@ if (cluster.isMaster) {
 } else {
     // Lower the heartbeat timeout
     var port = process.env.PORT || 8080;
-    
     server.listen(port, function() {
         console.log('Server listening at port %d', port);
     });
