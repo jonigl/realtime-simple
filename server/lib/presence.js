@@ -1,6 +1,8 @@
 var redis = require('redis');
+var bluebird = require('bluebird');
 
 function Presence() {
+  bluebird.promisifyAll(redis);
   this.client = redis.createClient({
     host: process.env.REDIS_ENDPOINT
   });
@@ -57,13 +59,11 @@ Presence.prototype.list = function(returnPresent) {
   var dead = [];
   var now = Date.now();
   var self = this;
+  var presents = {};
+  var sumSocketCount = 0;
 
-  this.client.hgetall('presence', function(err, presence) {
-    if (err) {
-      console.error('Failed to get presence from Redis: ' + err);
-      return returnPresent([]);
-    }
-
+  this.client.hgetallAsync('presence')
+  .then(function(presence) {
     for (var connection in presence) {
       var details = JSON.parse(presence[connection]);
       details.connection = connection;
@@ -78,8 +78,23 @@ Presence.prototype.list = function(returnPresent) {
     if (dead.length) {
       self._clean(dead);
     }
-
-    return returnPresent(active);
+    presents.active = active;
+    return self.client.hgetallAsync('socketCount');
+    // return returnPresent(active);
+  })
+  .then(function(socketCount) {
+    for (var instanceProcess in socketCount) {
+      var details = JSON.parse(socketCount[instanceProcess]);
+      sumSocketCount += details.clientsCount;
+    }
+    presents.sumSocketCount = sumSocketCount;
+    return returnPresent(presents);
+  })
+  .catch(function(err){
+    console.error('Failed to get presence from Redis: ' + err);
+    presents.active = [];
+    presents.sumSocketCount = 0;
+    return returnPresent(presents);
   });
 };
 
@@ -93,4 +108,27 @@ Presence.prototype._clean = function(toDelete) {
   for (var presence of toDelete) {
     this.remove(presence.connection);
   }
+};
+
+/**
+  * Remember a present user with their connection ID
+  *
+  * @param {string} instanceName - The instance name
+  * @param {string} processId - The process ID
+  * @param {integer} clientsCount - The Socket ios count for this process on this instance
+**/
+Presence.prototype.upsertSocketioCount = function(instanceName, processId, clientsCount) {
+  this.client.hsetAsync('socketCount', 
+    instanceName+processId,
+    JSON.stringify({
+      clientsCount: clientsCount,
+      when: Date.now()
+    })
+  ).
+  then(function() {
+    return;
+  })
+  .catch(function(err){
+      console.error('Failed to store presence in redis: ' + err);
+  });
 };

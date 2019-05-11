@@ -11,6 +11,7 @@
   "license": "BSD",
   "dependencies": {
     "@google-cloud/trace-agent": "^3.6.0",
+    "bluebird": "^3.5.4",
     "express": "^4.16.4",
     "newrelic": "^5.8.0",
     "redis": "^2.8.0",

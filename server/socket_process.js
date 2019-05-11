@@ -20,6 +20,10 @@ module.exports = (io) => {
         return;
       }
       addedUser = true;
+      var serverName = os.hostname();
+      var processPid = process.pid;
+      var socketClientCount = socket.client.conn.server.clientsCount;
+      Presence.upsertSocketioCount(serverName,processPid, socketClientCount);
       // {} because no metadata is needed
       Presence.upsert(socket.id, {}); 
       counter++;
@@ -36,13 +40,17 @@ module.exports = (io) => {
     });
 
     socket.on('getAnalytics', function() {
+      var serverName = os.hostname();
+      var processPid = process.pid;
+      var socketClientCount = socket.client.conn.server.clientsCount;
       socket.join('analytics');
-      Presence.list(function(users) {
+      
+      Presence.list(function(presents) {
         io.to(socket.id).emit('showAnalytics', {
-          processPid: process.pid,
-          serverName: os.hostname(),
-          redisCounter: users.length,
-          socketCount: socket.client.conn.server.clientsCount,
+          processPid: processPid,
+          serverName: serverName,
+          redisCounter: presents.active.length,
+          socketCount: presents.sumSocketCount,
           counter: counter
         });
         // echo globally (all clients) that a person has connected
