@@ -18,7 +18,7 @@ if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < 1; i++) {
     cluster.fork();
   }
 
@@ -35,8 +35,6 @@ if (cluster.isMaster) {
     // Routing
     app.use(express.static(path.join(__dirname, 'public')));
     io.adapter(redis({ host: process.env.REDIS_ENDPOINT, port: process.env.REDIS_PORT }));
-    // io.set('heartbeat timeout', 8000);
-    // io.set('heartbeat interval', 4000);
     require('./socket_process.js')(io);
     console.log(`Worker ${process.pid} started`);
 }

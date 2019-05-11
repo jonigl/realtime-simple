@@ -2,6 +2,7 @@ $(function() {
 
   var $serverName = $('#serverName'); // server area
   var $processPid = $('#processPid'); // process pid area
+  var $clientsCount = $('#clientsCount'); // process pid area
   var $status = $('#status'); // status area
   var $counter = $('#counter'); // counter area
   var socket = io({
@@ -24,6 +25,9 @@ $(function() {
     }
     if (data.processPid) {
       $processPid.html("Process id: " + data.processPid);
+    }
+    if (data.clientsCount) {
+      $clientsCount.html("Socket clients count: " + data.clientsCount);
     }
     $counter.html(message)
   }

@@ -39,7 +39,8 @@ module.exports = (io) => {
         io.to(socket.id).emit('showAnalytics', {
           numUsers: users.length,
           processPid: process.pid,
-          serverName: os.hostname()
+          serverName: os.hostname(),
+          clientsCount: socket.client.conn.server.clientsCount
         });
         // echo globally (all clients) that a person has connected
         // socket.broadcast.emit('user joined', {
