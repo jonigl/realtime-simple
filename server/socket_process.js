@@ -1,7 +1,6 @@
 module.exports = (io) => {
   var Presence = require('./lib/presence');
   var os = require("os");
-  var counter = 0;
 
   io.on('connection', function(socket) {
     var addedUser = false;
@@ -22,17 +21,6 @@ module.exports = (io) => {
       addedUser = true;
       // {} because no metadata is needed
       Presence.upsert(socket.id, {}); 
-      counter++;
-
-      // Presence.list(function(users) {
-      //   io.to('analytics').emit('showAnalytics', {
-      //     numUsers: users.length          
-      //   });
-      //   // echo globally (all clients) that a person has connected
-      //   // socket.broadcast.emit('user joined', {
-      //   //   numUsers: users.length
-      //   // });
-      // });
     });
 
     socket.on('getAnalytics', function() {
@@ -42,13 +30,7 @@ module.exports = (io) => {
           processPid: process.pid,
           serverName: os.hostname(),
           redisCounter: users.length,
-          socketCount: socket.client.conn.server.clientsCount,
-          counter: counter
         });
-        // echo globally (all clients) that a person has connected
-        // socket.broadcast.emit('user joined', {
-        //   numUsers: users.length
-        // });
       });
 
     });
@@ -58,13 +40,6 @@ module.exports = (io) => {
       if (addedUser) {
         socket.leave('analytics');
         Presence.remove(socket.id);
-        counter--;
-        // Presence.list(function(users) {
-        //   // echo globally (all clients) that a person has connected
-        //   io.to('analytics').emit('showAnalytics', {    
-        //     numUsers: users.length
-        //   });
-        // });
       }
     });
 

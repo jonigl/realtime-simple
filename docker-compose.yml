@@ -1,7 +1,7 @@
 version: '3'
 services:
   web1:
-    image: realtime-simple:latest
+    build: ./server
     environment:
       - SERVER_NAME=web1
       - PORT=8080
@@ -10,7 +10,7 @@ services:
     links:
       - redis
   web2:
-    image: realtime-simple:latest
+    build: ./server
     environment:
       - SERVER_NAME=web2
       - PORT=8080
@@ -19,7 +19,7 @@ services:
     links:
       - redis
   web3:
-    image: realtime-simple:latest
+    build: ./server
     environment:
       - SERVER_NAME=web3
       - PORT=8080
